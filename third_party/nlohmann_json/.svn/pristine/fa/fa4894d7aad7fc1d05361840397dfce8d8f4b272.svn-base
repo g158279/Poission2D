@@ -1,0 +1,22 @@
+{
+    "arch": "x86_64",
+    "build": "h39d44d4_0",
+    "build_number": 0,
+    "build_string": "h39d44d4_0",
+    "channel": "https://conda.anaconda.org/conda-forge/win-64",
+    "constrains": [],
+    "depends": [],
+    "fn": "nlohmann_json-3.11.2-h39d44d4_0.tar.bz2",
+    "license": "MIT",
+    "license_family": "MIT",
+    "md5": "079b300426a93575bdb09368c626ee7d",
+    "name": "nlohmann_json",
+    "platform": "win",
+    "sha256": "d363a83996fbdaa852d355c34bccce88427d1d921419256524b2549c4a344267",
+    "size": 116578,
+    "subdir": "win-64",
+    "timestamp": 1661171599353,
+    "track_features": "",
+    "url": "https://conda.anaconda.org/conda-forge/win-64/nlohmann_json-3.11.2-h39d44d4_0.tar.bz2",
+    "version": "3.11.2"
+}
