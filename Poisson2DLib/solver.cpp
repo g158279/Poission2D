@@ -178,8 +178,8 @@ namespace CPPPOISSON
 
 			m_u += du;
 
-			double abs_error = du.norm() / m_u.norm();
-			double rel_error = F.norm();
+			double abs_error = du.norm();
+			double rel_error = du.norm() / m_u.norm();
 			if (iteration == 0)
 			{
 				log_file << iteration + 1 << "\t\t" << abs_error << "\t\t-\n";
