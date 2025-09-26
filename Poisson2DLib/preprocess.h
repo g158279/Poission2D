@@ -42,7 +42,7 @@ namespace CPPPOISSON
     {
     public:
         explicit PreProcess() {};
-        bool readFromJson(const std::filesystem::path& jsonPath);
+        void readFromJson(const std::filesystem::path& jsonPath);
     private:
         PoissonDef m_def;
     };

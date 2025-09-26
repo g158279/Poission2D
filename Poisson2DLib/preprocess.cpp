@@ -2,7 +2,7 @@
 
 namespace CPPPOISSON
 {
-	bool PreProcess::readFromJson(const std::filesystem::path& jsonPath)
+	void PreProcess::readFromJson(const std::filesystem::path& jsonPath)
 	{
 		using json = nlohmann::json;
 
@@ -64,6 +64,5 @@ namespace CPPPOISSON
 		m_def.u0 = config["functions"]["u0"].get<std::string>();
 		m_def.f = config["functions"]["f"].get<std::string>();
 		m_def.df_du = config["functions"]["df_du"].get<std::string>();
-		return true;
 	}
 }

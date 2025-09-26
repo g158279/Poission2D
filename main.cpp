@@ -1,4 +1,6 @@
-﻿#include "Poisson2DLib/RunPoisson2D.h"
+﻿#include "Poisson2DLib/preprocess.h"
+#include "Poisson2DLib/mesh.h"
+//#include "Poisson2DLib/RunPoisson2D.h"
 
 using namespace CPPPOISSON;
 
@@ -14,30 +16,35 @@ int main(int argc, char* argv[])
 
         const std::filesystem::path exePath(argv[0]);
 
-        auto pTask = std::make_unique<RunPoisson2D>(argc, argv);
-
+        PreProcess preProcess;
         try
         {
-            bool readJsonSucceeds = pTask->readFromJson(argv[1]);
-            if (!readJsonSucceeds)
-            {
-                std::cout << "ERROR: Loading .json file failed!" << std::endl;
-                return 4; // TASK_JSON_PARSE_FAILED
-            }
+            preProcess.readFromJson(argv[1]);
         }
         catch (const std::exception& e)
         {
             std::cout << e.what() << std::endl;
-            return 4; // TASK_JSON_PARSE_FAILED
+            return 3; // TASK_JSON_PARSE_FAILED
         }
 
-        bool simulationSucceeds = pTask->simulate();
+        //std::unique_ptr<Mesh> mesh;
+        //try
+        //{
+        //}
+        //catch (const std::exception& e)
+        //{
+        //    std::cout << e.what() << std::endl;
+        //    return 4; // MESH_CONSTRUCTION_FAILED
+        //}
 
-        if (!simulationSucceeds)
-        {
-            std::cout << "ERROR: Simulation failed!" << std::endl;
-            return 7; // SIMULATION_FAILED
-        }
+        //RunPoisson2D task(argc, argv);
+        //bool simulationSucceeds = task.simulate();
+
+        //if (!simulationSucceeds)
+        //{
+        //    std::cout << "ERROR: Simulation failed!" << std::endl;
+        //    return 7; // SIMULATION_FAILED
+        //}
 
         std::cout << "Simulation finished successfully!" << std::endl;
         return 0; // SIMULATION_SUCCEEDED
