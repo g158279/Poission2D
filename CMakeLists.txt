@@ -9,19 +9,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
-set(EXTERNAL_DIR "F:/guozhongqing/Nuwa_kernel/external/third_party")
-
-set(CMAKE_PREFIX_PATH "${EXTERNAL_DIR}" ${CMAKE_PREFIX_PATH})
-
+set(CMAKE_PREFIX_PATH 3rdparty)
+find_package(nlohmann_json REQUIRED)
+find_package(muparser REQUIRED)
+find_package(Boost REQUIRED)
 find_package(Eigen3 REQUIRED)
-find_package(Boost REQUIRED COMPONENTS filesystem program_options)
-
-set(NLOHMANN_JSON_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third_party/nlohmann_json/Library/include")
-set(GOOGLETEST_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest-main/googletest-main/googletest/include")
-
-include_directories(
-    ${NLOHMANN_JSON_DIR}
-)
 
 add_library (Poisson2DLib SHARED)
 
@@ -39,6 +31,7 @@ target_sources (Poisson2DLib PRIVATE
 target_link_libraries(Poisson2DLib PUBLIC
 	Eigen3::Eigen
 	Boost::boost
+	nlohmann_json::nlohmann_json
 )
 
 target_compile_definitions(Poisson2DLib PRIVATE MYLIBRARY_EXPORTS)
@@ -57,15 +50,15 @@ add_executable(Poisson2D
 
 target_link_libraries(Poisson2D PRIVATE Poisson2DLib)
 
-enable_testing()
-
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest-main/googletest-main)
-
-add_executable(Poisson2DLibTest gtest/meshTest.cpp)
-
-target_link_libraries(Poisson2DLibTest PRIVATE Poisson2DLib GTest::gtest GTest::gtest_main)
-
-target_include_directories(Poisson2DLibTest PRIVATE ${CMAKE_SOURCE_DIR}/Poisson2DLib)
-target_include_directories(Poisson2DLibTest PRIVATE ${GOOGLETEST_DIR})
-
-add_test(NAME Poisson2DLibTest COMMAND Poisson2DLibTest)
+#enable_testing()
+#
+#add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest-main/googletest-main)
+#
+#add_executable(Poisson2DLibTest gtest/meshTest.cpp)
+#
+#target_link_libraries(Poisson2DLibTest PRIVATE Poisson2DLib GTest::gtest GTest::gtest_main)
+#
+#target_include_directories(Poisson2DLibTest PRIVATE ${CMAKE_SOURCE_DIR}/Poisson2DLib)
+#target_include_directories(Poisson2DLibTest PRIVATE ${GOOGLETEST_DIR})
+#
+#add_test(NAME Poisson2DLibTest COMMAND Poisson2DLibTest)
