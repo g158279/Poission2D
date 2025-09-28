@@ -14,8 +14,6 @@ int main(int argc, char* argv[])
             return 2; // TASK_JSON_NOT_EXIST
         }
 
-        const std::filesystem::path exePath(argv[0]);
-
         PreProcess preProcess;
         try
         {
@@ -27,15 +25,30 @@ int main(int argc, char* argv[])
             return 3; // TASK_JSON_PARSE_FAILED
         }
 
-        //std::unique_ptr<Mesh> mesh;
-        //try
-        //{
-        //}
-        //catch (const std::exception& e)
-        //{
-        //    std::cout << e.what() << std::endl;
-        //    return 4; // MESH_CONSTRUCTION_FAILED
-        //}
+        std::unique_ptr<Mesh> pMesh;
+        try
+        {
+            std::string meshShape = preProcess.getDef().shape;
+            std::transform(meshShape.begin(), meshShape.end(), meshShape.begin(), ::tolower);
+            if (meshShape == "triangular" || meshShape == "tri" || meshShape == "t")
+            {
+                pMesh = std::make_unique<TriangularMesh>(preProcess.getDef());
+            }
+            else if (meshShape == "rectangular" || meshShape == "rect" || meshShape == "r")
+            {
+                pMesh = std::make_unique<RectangularMesh>(preProcess.getDef());
+            }
+            else
+            {
+                std::cerr << "Wrong mesh name." << std::endl;
+                return 4;
+            }
+        }
+        catch (const std::exception& e)
+        {
+            std::cout << e.what() << std::endl;
+            return 4; // MESH_CONSTRUCTION_FAILED
+        }
 
         //RunPoisson2D task(argc, argv);
         //bool simulationSucceeds = task.simulate();

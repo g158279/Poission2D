@@ -11,8 +11,8 @@ namespace CPPPOISSON
 		json config;
 		input_file >> config;
 
-		m_def.lx = config["mesh"]["lx"].get<double>();
-		m_def.ly = config["mesh"]["ly"].get<double>();
+		m_def.boundary.xRight = config["mesh"]["lx"].get<double>();
+		m_def.boundary.yTop = config["mesh"]["ly"].get<double>();
 		m_def.nx = config["mesh"]["nx"].get<int>();
 		m_def.ny = config["mesh"]["ny"].get<int>();
 		m_def.shape = config["mesh"]["shape"].get<std::string>();
@@ -64,5 +64,25 @@ namespace CPPPOISSON
 		m_def.u0 = config["functions"]["u0"].get<std::string>();
 		m_def.f = config["functions"]["f"].get<std::string>();
 		m_def.df_du = config["functions"]["df_du"].get<std::string>();
+	}
+
+	bool CPPPOISSON::Boundary::isOnBoundary(const Point& point, BoundaryType boundaryType) const
+	{
+		if (boundaryType == BoundaryType::Left)
+		{
+			return std::fabs(point.x() - xLeft) < tol;
+		}
+		else if (boundaryType == BoundaryType::Right)
+		{
+			return std::fabs(point.x() - xRight) < tol;
+		}
+		else if (boundaryType == BoundaryType::Bottom)
+		{
+			return std::fabs(point.y() - yBottom) < tol;
+		}
+		else if (boundaryType == BoundaryType::Top)
+		{
+			return std::fabs(point.y() - yTop) < tol;
+		}
 	}
 }
