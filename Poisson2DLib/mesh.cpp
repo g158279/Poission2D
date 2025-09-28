@@ -1,92 +1,46 @@
 #include "mesh.h"
-#include<iostream>
+#include <iostream>
+#include <algorithm>
 
 namespace CPPPOISSON
 {
-	Mesh::Mesh(double lx, double ly, int nx, int ny)
-		:m_lx(lx), m_ly(ly), m_nx(nx), m_ny(ny)
+	Mesh::Mesh(const PoissonDef& poissonDef)
 	{
-		Eigen::VectorXd x = Eigen::VectorXd::LinSpaced(m_nx, 0, m_lx);
-		Eigen::VectorXd y = Eigen::VectorXd::LinSpaced(m_ny, 0, m_ly);
-		for (int j = 0; j < m_ny; ++j)
+		int nx{ poissonDef.nx }, ny{ poissonDef.ny };
+		double lx{ poissonDef.boundary.xRight }, ly{ poissonDef.boundary.yTop };
+		double xStep{ lx / (nx - 1) };
+		double yStep{ ly / (ny - 1) };
+		m_points.resize(nx * ny);
+		for (int i = 0; i < ny; ++i)
 		{
-			for (int i = 0; i < m_nx; ++i)
+			double y = i * yStep;
+			for (int j = 0; j < nx; ++j)
 			{
-				m_points.emplace_back(x[i], y[j]);
+				double x = j * xStep;
+				size_t index = i * nx + j;
+				m_points.at(index) = std::make_unique<Point>(x, y, index);
 			}
 		}
-	}
-
-	Mesh::~Mesh() {}
-
-	std::vector<int> Mesh::getBoundaryNodes(const std::string& boundary) const
-	{
-		constexpr double tolerance = 1e-8;
-		std::vector<int> nodes;
-		if (boundary == "left")
+		std::string meshShape = poissonDef.shape;
+		std::transform(meshShape.begin(), meshShape.end(), meshShape.begin(), ::tolower);
+		if (meshShape == "triangular" || meshShape == "tri" || meshShape == "t")
 		{
-			int ind = 0;
-			for (size_t i = 0; i < m_points.size(); ++i)
-			{
-				if (std::fabs(m_points[i][0] - 0.) < tolerance)
-				{
-					nodes.push_back(ind);
-				}
-				++ind;
-			}
+			m_eleType = EleType::Triangle;
+			generateTriangleMesh(nx, ny);
 		}
-		else if (boundary == "right")
+		else if (meshShape == "rectangular" || meshShape == "rect" || meshShape == "r")
 		{
-			int ind = 0;
-			for (size_t i = 0; i < m_points.size(); ++i)
-			{
-				if (std::fabs(m_points[i][0] - m_lx) < tolerance)
-				{
-					nodes.push_back(ind);
-				}
-				++ind;
-			}
-		}
-		else if (boundary == "bottom")
-		{
-			int ind = 0;
-			for (size_t i = 0; i < m_points.size(); ++i)
-			{
-				if (std::fabs(m_points[i][1] - 0.) < tolerance)
-				{
-					nodes.push_back(ind);
-				}
-				++ind;
-			}
-		}
-		else if (boundary == "top")
-		{
-			int ind = 0;
-			for (size_t i = 0; i < m_points.size(); ++i)
-			{
-				if (std::fabs(m_points[i][1] - m_ly) < tolerance)
-				{
-					nodes.push_back(ind);
-				}
-				++ind;
-			}
+			m_eleType = EleType::Rectangle;
+			generateRectangleMesh(nx, ny);
 		}
 		else
 		{
-			std::cout << "Wrong boundary name <" << boundary << "> !!! (Boundary name should be left/right/bottom/top)" << std::endl;
+			throw std::invalid_argument("Wrong mesh shape!");
 		}
-		return nodes;
 	}
 
-	TriangularMesh::TriangularMesh(double lx, double ly, int nx, int ny)
-		:Mesh(lx, ly, nx, ny)
+	void Mesh::generateTriangleMesh(int nx, int ny)
 	{
-		m_elements = generateElement(m_nx, m_ny, m_points);
-	}
-
-	std::vector<std::vector<int>> TriangularMesh::generateElement(int nx, int ny, const std::vector<Eigen::Vector2d>& points) const
-	{
-		std::vector<std::vector<int>> elements;
 		for (int i = 0; i < ny - 1; ++i)
 		{
 			for (int j = 0; j < nx - 1; ++j)
@@ -95,16 +49,39 @@ namespace CPPPOISSON
 				int n2 = i * nx + (j + 1);
 				int n3 = (i + 1) * nx + (j + 1);
 				int n4 = (i + 1) * nx + j;
-				std::vector<int> ele1 = { n1,n2,n4 };
-				std::vector<int> ele2 = { n2,n3,n4 };
-				elements.push_back(ele1);
-				elements.push_back(ele2);
+				std::vector<Point*> ele1 = { m_points.at(n1).get(),m_points.at(n2).get(),m_points.at(n4).get() };
+				std::vector<Point*> ele2 = { m_points.at(n2).get(),m_points.at(n3).get(),m_points.at(n4).get() };
+				m_elements.emplace_back(std::make_unique<TriangularElement>(ele1));
+				m_elements.emplace_back(std::make_unique<TriangularElement>(ele2));
 			}
 		}
-		return elements;
 	}
 
-	Eigen::VectorXd TriangularMesh::get_N(double s, double t) const
+	void Mesh::generateRectangleMesh(int nx, int ny)
+	{
+		for (int i = 0; i < ny - 1; ++i)
+		{
+			for (int j = 0; j < nx - 1; ++j)
+			{
+				int n1 = i * nx + j;
+				int n2 = i * nx + (j + 1);
+				int n3 = (i + 1) * nx + (j + 1);
+				int n4 = (i + 1) * nx + j;
+				std::vector<Point*> ele = { m_points.at(n1).get(),m_points.at(n2).get(),m_points.at(n3).get(),m_points.at(n4).get() };
+				m_elements.emplace_back(std::make_unique<RectangularElement>(ele));
+			}
+		}
+	}
+
+	Element::Element(const std::vector<Point*>& nodes) :mp_nodes{ nodes } {}
+
+	TriangularElement::TriangularElement(const std::vector<Point*>& nodes)
+		:Element(nodes)
+	{
+		std::cout << "Calculating based on triangular mesh" << std::endl;
+	}
+
+	Eigen::VectorXd TriangularElement::get_N(double s, double t) const
 	{
 		Eigen::VectorXd N(3);
 		N <<
@@ -114,7 +91,7 @@ namespace CPPPOISSON
 		return N;
 	}
 
-	Eigen::MatrixXd TriangularMesh::get_dN_ds(double s, double t) const
+	Eigen::MatrixXd TriangularElement::get_dN_ds(double s, double t) const
 	{
 		Eigen::MatrixXd dN_ds(3, 2);
 		dN_ds <<
@@ -124,31 +101,13 @@ namespace CPPPOISSON
 		return dN_ds;
 	}
 
-	RectangularMesh::RectangularMesh(double lx, double ly, int nx, int ny)
-		:Mesh(lx, ly, nx, ny)
+	RectangularElement::RectangularElement(const std::vector<Point*>& nodes)
+		:Element(nodes)
 	{
-		m_elements = generateElement(m_nx, m_ny, m_points);
+		std::cout << "Calculating based on rectangular mesh" << std::endl;
 	}
 
-	std::vector<std::vector<int>> RectangularMesh::generateElement(int nx, int ny, const std::vector<Eigen::Vector2d>& points) const
-	{
-		std::vector<std::vector<int>> elements;
-		for (int i = 0; i < ny - 1; ++i)
-		{
-			for (int j = 0; j < nx - 1; ++j)
-			{
-				int n1 = i * nx + j;
-				int n2 = i * nx + (j + 1);
-				int n3 = (i + 1) * nx + (j + 1);
-				int n4 = (i + 1) * nx + j;
-				std::vector<int> ele = { n1,n2,n3,n4 };
-				elements.push_back(ele);
-			}
-		}
-		return elements;
-	}
-
-	Eigen::VectorXd RectangularMesh::get_N(double s, double t) const
+	Eigen::VectorXd RectangularElement::get_N(double s, double t) const
 	{
 		Eigen::VectorXd N(4);
 		N <<
@@ -159,7 +118,7 @@ namespace CPPPOISSON
 		return N;
 	}
 
-	Eigen::MatrixXd RectangularMesh::get_dN_ds(double s, double t) const
+	Eigen::MatrixXd RectangularElement::get_dN_ds(double s, double t) const
 	{
 		Eigen::MatrixXd dN_ds(4, 2);
 		dN_ds <<

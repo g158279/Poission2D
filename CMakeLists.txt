@@ -18,14 +18,16 @@ find_package(Eigen3 REQUIRED)
 add_library (Poisson2DLib SHARED)
 
 target_sources (Poisson2DLib PRIVATE 
-	Poisson2DLib/mesh.h
-	Poisson2DLib/mesh.cpp
-	Poisson2DLib/solver.h
-	Poisson2DLib/solver.cpp
-	Poisson2DLib/utils.h
-	Poisson2DLib/utils.cpp
-	Poisson2DLib/RunPoisson2D.h
-	Poisson2DLib/RunPoisson2D.cpp
+	Poisson2DLib/preprocess.h
+	Poisson2DLib/preprocess.cpp
+ 	Poisson2DLib/mesh.h
+ 	Poisson2DLib/mesh.cpp
+#	Poisson2DLib/solver.h
+#	Poisson2DLib/solver.cpp
+#	Poisson2DLib/utils.h
+#	Poisson2DLib/utils.cpp
+#	Poisson2DLib/RunPoisson2D.h
+#	Poisson2DLib/RunPoisson2D.cpp
 )
 
 target_link_libraries(Poisson2DLib PUBLIC
@@ -34,7 +36,7 @@ target_link_libraries(Poisson2DLib PUBLIC
 	nlohmann_json::nlohmann_json
 )
 
-target_compile_definitions(Poisson2DLib PRIVATE MYLIBRARY_EXPORTS)
+target_compile_definitions(Poisson2DLib PRIVATE POISSON_EXPORTS)
 
 option(USE_SPARSE_MATRIX "Use sparse matrix" ON)
 

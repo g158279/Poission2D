@@ -84,5 +84,8 @@ namespace CPPPOISSON
 		{
 			return std::fabs(point.y() - yTop) < tol;
 		}
+		else {
+			return false;
+		}
 	}
 }

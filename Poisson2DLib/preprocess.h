@@ -35,24 +35,24 @@ namespace CPPPOISSON
 
 	struct PoissonDef
 	{
-		int nx;
-		int ny;
-		int maxIter;
-		double lx;
-		double ly;
-		double leftBC;
-		double rightBC;
-		double bottomBC;
-		double topBC;
-		double rTol;
-		double aTol;
-		size_t gaussN;
-		std::string shape;
-		std::string u0;
-		std::string f;
-		std::string df_du;
-		std::string outputPath;
-		std::string logPath;
+		int nx{ 0 };
+		int ny{ 0 };
+		int maxIter{ 0 };
+		double lx{ 0.0 };
+		double ly{ 0.0 };
+		double leftBC{ 0.0 };
+		double rightBC{ 0.0 };
+		double bottomBC{ 0.0 };
+		double topBC{ 0.0 };
+		double rTol{ 0.0 };
+		double aTol{ 0.0 };
+		size_t gaussN{ 0 };
+		std::string shape{ "" };
+		std::string u0{ "" };
+		std::string f{ "" };
+		std::string df_du{ "" };
+		std::string outputPath{ "" };
+		std::string logPath{ "" };
 		Eigen::VectorXd uSol;
 		Boundary boundary;
 	};
@@ -60,7 +60,13 @@ namespace CPPPOISSON
 	class PREPROCESS_API PreProcess
 	{
 	public:
-		explicit PreProcess() {};
+		PreProcess() {};
+		~PreProcess() = default;
+		PreProcess(const PreProcess&) = delete;
+		PreProcess& operator=(const PreProcess&) = delete;
+		PreProcess(PreProcess&&) = delete;
+		PreProcess& operator=(PreProcess&&) = delete;
+
 		void readFromJson(const std::filesystem::path& jsonPath);
 		PoissonDef& getDef() { return m_def; };
 	private:
