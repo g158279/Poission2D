@@ -59,6 +59,11 @@ namespace CPPPOISSON
 		Mesh(Mesh&&) = delete;
 		Mesh& operator=(Mesh&&) = delete;
 
+		const std::vector<std::unique_ptr<Element>>& getAllEles() const { return m_elements; }
+		const std::unique_ptr<Element>& getEle(size_t index) const { return m_elements.at(index); }
+		const size_t getEleSize() const { return m_elements.size(); }
+		const Point& getPoint(size_t index) const { return *m_points.at(index); }
+		const size_t getPointSize() const { return m_points.size(); }
 	private:
 		void generateTriangleMesh(int nx, int ny);
 		void generateRectangleMesh(int nx, int ny);
