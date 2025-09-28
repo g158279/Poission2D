@@ -18,6 +18,7 @@ find_package(Eigen3 REQUIRED)
 add_library (Poisson2DLib SHARED)
 
 target_sources (Poisson2DLib PRIVATE 
+	Poisson2DLib/geometry.h
 	Poisson2DLib/preprocess.h
 	Poisson2DLib/preprocess.cpp
  	Poisson2DLib/mesh.h

@@ -9,22 +9,11 @@
 #include <vector>
 #include <Eigen/Dense>
 #include <string>
+#include "geometry.h"
 #include "preprocess.h"
 
 namespace CPPPOISSON
 {
-	class Point {
-	public:
-		explicit Point(double x, double y, size_t index) :m_x(x), m_y(y), m_index(index) {}
-
-		const double x() const { return m_x; }
-		const double y() const { return m_y; }
-		const size_t index() const { return m_index; }
-	private:
-		double m_x;
-		double m_y;
-		size_t m_index;
-	};
 
 	enum class EleType
 	{
@@ -34,7 +23,7 @@ namespace CPPPOISSON
 
 	class Element {
 	public:
-		Element(const std::vector<Point*>& nodes) {};
+		explicit Element(const std::vector<Point*>& nodes);
 		virtual ~Element() = default;
 		virtual Eigen::VectorXd get_N(double s, double t) const = 0;
 		virtual Eigen::MatrixXd get_dN_ds(double s, double t) const = 0;
@@ -45,7 +34,7 @@ namespace CPPPOISSON
 	class TriangularElement : public Element
 	{
 	public:
-		TriangularElement(const std::vector<Point*>& nodes);
+		explicit TriangularElement(const std::vector<Point*>& nodes) :Element(nodes) {};
 		virtual ~TriangularElement() = default;
 		Eigen::VectorXd get_N(double s, double t) const override;
 		Eigen::MatrixXd get_dN_ds(double s, double t) const override;
@@ -54,7 +43,7 @@ namespace CPPPOISSON
 	class RectangularElement : public Element
 	{
 	public:
-		RectangularElement(const std::vector<Point*>& nodes);
+		explicit RectangularElement(const std::vector<Point*>& nodes) :Element(nodes) {};
 		virtual ~RectangularElement() = default;
 		Eigen::VectorXd get_N(double s, double t) const override;
 		Eigen::MatrixXd get_dN_ds(double s, double t) const override;
@@ -63,7 +52,7 @@ namespace CPPPOISSON
 	class MESH_API Mesh
 	{
 	public:
-		Mesh(const PoissonDef& poissonDef);
+		explicit Mesh(const PoissonDef& poissonDef);
 		~Mesh() = default;
 		Mesh(const Mesh&) = delete;
 		Mesh& operator=(const Mesh&) = delete;

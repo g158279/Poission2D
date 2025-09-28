@@ -66,7 +66,7 @@ namespace CPPPOISSON
 		m_def.df_du = config["functions"]["df_du"].get<std::string>();
 	}
 
-	bool CPPPOISSON::Boundary::isOnBoundary(const Point& point, BoundaryType boundaryType) const
+	bool Boundary::isOnBoundary(const Point& point, BoundaryType boundaryType) const
 	{
 		if (boundaryType == BoundaryType::Left)
 		{

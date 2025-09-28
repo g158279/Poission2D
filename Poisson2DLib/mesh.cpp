@@ -25,11 +25,13 @@ namespace CPPPOISSON
 		std::transform(meshShape.begin(), meshShape.end(), meshShape.begin(), ::tolower);
 		if (meshShape == "triangular" || meshShape == "tri" || meshShape == "t")
 		{
+			std::cout << "Calculating based on triangular mesh" << std::endl;
 			m_eleType = EleType::Triangle;
 			generateTriangleMesh(nx, ny);
 		}
 		else if (meshShape == "rectangular" || meshShape == "rect" || meshShape == "r")
 		{
+			std::cout << "Calculating based on rectangular mesh" << std::endl;
 			m_eleType = EleType::Rectangle;
 			generateRectangleMesh(nx, ny);
 		}
@@ -75,12 +77,6 @@ namespace CPPPOISSON
 
 	Element::Element(const std::vector<Point*>& nodes) :mp_nodes{ nodes } {}
 
-	TriangularElement::TriangularElement(const std::vector<Point*>& nodes)
-		:Element(nodes)
-	{
-		std::cout << "Calculating based on triangular mesh" << std::endl;
-	}
-
 	Eigen::VectorXd TriangularElement::get_N(double s, double t) const
 	{
 		Eigen::VectorXd N(3);
@@ -99,12 +95,6 @@ namespace CPPPOISSON
 			1, 0,
 			0, 1;
 		return dN_ds;
-	}
-
-	RectangularElement::RectangularElement(const std::vector<Point*>& nodes)
-		:Element(nodes)
-	{
-		std::cout << "Calculating based on rectangular mesh" << std::endl;
 	}
 
 	Eigen::VectorXd RectangularElement::get_N(double s, double t) const

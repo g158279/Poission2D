@@ -11,28 +11,10 @@
 #include <fstream>
 #include <functional>
 #include <nlohmann/json.hpp>
-
-#include "mesh.h"
+#include "geometry.h"
 
 namespace CPPPOISSON
 {
-	enum class BoundaryType {
-		Left,
-		Right,
-		Top,
-		Bottom,
-	};
-
-	struct Boundary {
-		bool isOnBoundary(const Point& point, BoundaryType boundaryType) const;
-		double xLeft{ 0.0 };
-		double xRight{ 1.0 };
-		double yBottom{ 0.0 };
-		double yTop{ 1.0 };
-	private:
-		double tol{ 1e-8 };
-	};
-
 	struct PoissonDef
 	{
 		int nx{ 0 };
@@ -60,7 +42,7 @@ namespace CPPPOISSON
 	class PREPROCESS_API PreProcess
 	{
 	public:
-		PreProcess() {};
+		explicit PreProcess() {};
 		~PreProcess() = default;
 		PreProcess(const PreProcess&) = delete;
 		PreProcess& operator=(const PreProcess&) = delete;
