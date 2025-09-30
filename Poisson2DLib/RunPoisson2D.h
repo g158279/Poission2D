@@ -27,10 +27,12 @@ namespace CPPPOISSON
 		void simulate() const;
 
     private:
+		void initDirichletBC();
 		void initSolution();
 		const Mesh& m_mesh;
 		const PoissonDef& m_poissonDef;
-		std::vector <std::pair<std::vector<size_t>, double>> m_dirichletBC;
+		std::map<int, double> m_dirichletBC;
+		//std::vector <std::pair<std::vector<size_t>, double>> m_dirichletBC;
 		Eigen::VectorXd m_solution;
 		//FEMProblem m_problem;
 	};

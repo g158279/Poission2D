@@ -1,4 +1,5 @@
 ﻿#include "RunPoisson2D.h"
+#include "RunPoisson2D.h"
 #include "mesh.h"
 #include "preprocess.h"
 //#include "utils.h"
@@ -10,13 +11,41 @@ namespace CPPPOISSON
 {
 	RunPoisson2D::RunPoisson2D(const Mesh& mesh, const PoissonDef& poissonDef) :m_mesh{ mesh }, m_poissonDef{ poissonDef }
 	{
+		initDirichletBC();
 		initSolution();
 		//FEMProblem problem(mesh, poissonDef);
 	}
 
 
+	void RunPoisson2D::initDirichletBC()
+	{
+		for (const auto& point:m_mesh.getAllPoints()) {
+			for (const auto& DBC : m_poissonDef.dirichletBC) {
+				bool isOnBoundary = m_poissonDef.boundary.isOnBoundary(*point, DBC.first);
+				if (isOnBoundary) {
+					m_dirichletBC[point->index()]=DBC.second;
+				}
+			}
+		}
+	}
+
 	void RunPoisson2D::initSolution()
 	{
+		//for (size_t i = 0; i < m_mesh.getPointSize(); i++) {
+		//	const auto& point = m_mesh.getPoint(i);
+		//	size_t index = point.index();
+		//	double x = point.x();
+		//	double y = point.y();
+		//	m_solution(index) = m_config.funcGuess(x, y);
+		//}
+
+		//for (const auto& valueIndicesPair : m_dirichletBC) {
+		//	const auto& vec = valueIndicesPair.first;
+		//	const double val = valueIndicesPair.second;
+		//	for (size_t n : vec) {
+		//		m_solution(n) = val;
+		//	}
+		//}
 
 	}
 

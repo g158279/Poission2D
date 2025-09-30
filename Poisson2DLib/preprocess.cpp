@@ -27,38 +27,34 @@ namespace CPPPOISSON
 
 		if (config["boundary_conditions"].contains("left"))
 		{
-			m_def.leftBC = config["boundary_conditions"]["left"].get<double>();
+			m_def.dirichletBC[BoundaryType::Left] = config["boundary_conditions"]["left"].get<double>();
 		}
 		else
 		{
-			m_def.leftBC = -1.0;
 			std::cout << "Left boundary condition not set." << std::endl;
 		}
 		if (config["boundary_conditions"].contains("right"))
 		{
-			m_def.rightBC = config["boundary_conditions"]["right"].get<double>();
+			m_def.dirichletBC[BoundaryType::Right] = config["boundary_conditions"]["right"].get<double>();
 		}
 		else
 		{
-			m_def.rightBC = -1.0;
 			std::cout << "Right boundary condition not set." << std::endl;
 		}
 		if (config["boundary_conditions"].contains("top"))
 		{
-			m_def.topBC = config["boundary_conditions"]["top"].get<double>();
+			m_def.dirichletBC[BoundaryType::Top] = config["boundary_conditions"]["top"].get<double>();
 		}
 		else
 		{
-			m_def.topBC = -1.0;
 			std::cout << "Top boundary condition not set." << std::endl;
 		}
 		if (config["boundary_conditions"].contains("bottom"))
 		{
-			m_def.bottomBC = config["boundary_conditions"]["bottom"].get<double>();
+			m_def.dirichletBC[BoundaryType::Bottom] = config["boundary_conditions"]["bottom"].get<double>();
 		}
 		else
 		{
-			m_def.bottomBC = -1.0;
 			std::cout << "Bottom boundary condition not set." << std::endl;
 		}
 

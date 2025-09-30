@@ -36,6 +36,7 @@ namespace CPPPOISSON
 		std::function<double(double)> f;
 		std::function<double(double)> df_du;
 		std::function<double(double, double)> u0;
+		std::map<BoundaryType, double> dirichletBC;
 		Boundary boundary;
 	};
 

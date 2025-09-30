@@ -62,6 +62,7 @@ namespace CPPPOISSON
 		const std::vector<std::unique_ptr<Element>>& getAllEles() const { return m_elements; }
 		const std::unique_ptr<Element>& getEle(size_t index) const { return m_elements.at(index); }
 		const size_t getEleSize() const { return m_elements.size(); }
+		const std::vector<std::unique_ptr<Point>>& getAllPoints() const { return m_points; }
 		const Point& getPoint(size_t index) const { return *m_points.at(index); }
 		const size_t getPointSize() const { return m_points.size(); }
 	private:
