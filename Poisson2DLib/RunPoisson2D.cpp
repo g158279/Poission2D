@@ -31,7 +31,7 @@ namespace CPPPOISSON
 
 	void RunPoisson2D::initSolution()
 	{
-		Eigen::VectorXd m_solution(m_mesh.getPointSize());
+		m_solution(m_mesh.getPointSize());
 		for (const auto& point : m_mesh.getAllPoints()) {
 			size_t index = point->index();
 			double x = point->x();
