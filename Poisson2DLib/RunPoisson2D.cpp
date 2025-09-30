@@ -20,10 +20,10 @@ namespace CPPPOISSON
 	void RunPoisson2D::initDirichletBC()
 	{
 		for (const auto& point:m_mesh.getAllPoints()) {
-			for (const auto& DBC : m_poissonDef.dirichletBC) {
-				bool isOnBoundary = m_poissonDef.boundary.isOnBoundary(*point, DBC.first);
+			for (const auto& [BCtype, BCval] : m_poissonDef.dirichletBC) {
+				bool isOnBoundary = m_poissonDef.boundary.isOnBoundary(*point, BCtype);
 				if (isOnBoundary) {
-					m_dirichletBC[point->index()]=DBC.second;
+					m_dirichletBC[point->index()]= BCval;
 				}
 			}
 		}
@@ -31,22 +31,17 @@ namespace CPPPOISSON
 
 	void RunPoisson2D::initSolution()
 	{
-		//for (size_t i = 0; i < m_mesh.getPointSize(); i++) {
-		//	const auto& point = m_mesh.getPoint(i);
-		//	size_t index = point.index();
-		//	double x = point.x();
-		//	double y = point.y();
-		//	m_solution(index) = m_config.funcGuess(x, y);
-		//}
+		Eigen::VectorXd m_solution(m_mesh.getPointSize());
+		for (const auto& point : m_mesh.getAllPoints()) {
+			size_t index = point->index();
+			double x = point->x();
+			double y = point->y();
+			m_solution(index) = m_poissonDef.u0(x, y);
+		}
 
-		//for (const auto& valueIndicesPair : m_dirichletBC) {
-		//	const auto& vec = valueIndicesPair.first;
-		//	const double val = valueIndicesPair.second;
-		//	for (size_t n : vec) {
-		//		m_solution(n) = val;
-		//	}
-		//}
-
+		for (const auto& [nodeID, BCval] : m_dirichletBC) {
+			m_solution(nodeID) = BCval;
+		}
 	}
 
 	//bool RunPoisson2D::genProblem() {
