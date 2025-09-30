@@ -65,12 +65,13 @@ namespace CPPPOISSON
 		const std::vector<std::unique_ptr<Point>>& getAllPoints() const { return m_points; }
 		const Point& getPoint(size_t index) const { return *m_points.at(index); }
 		const size_t getPointSize() const { return m_points.size(); }
+
+		EleType m_eleType;
 	private:
 		void generateTriangleMesh(int nx, int ny);
 		void generateRectangleMesh(int nx, int ny);
 		std::vector<std::unique_ptr<Point>> m_points;
 		std::vector<std::unique_ptr<Element>> m_elements;
-		EleType m_eleType;
 	};
 
 }   // namespace CPPPOISSON

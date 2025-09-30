@@ -12,7 +12,8 @@
 
 namespace CPPPOISSON
 {
-MYLIBRARY_API void gauss_quadrature_2d(size_t n, std::vector<Eigen::Vector2d>& points, std::vector<double>& weights);
-MYLIBRARY_API Eigen::MatrixXd analytic_solution(const double lx, const double ly, const int nx, const int ny, size_t N=100);
+	MYLIBRARY_API void generateRectangleInt(size_t n, std::vector<Eigen::Vector3d>& gaussInts);
+	MYLIBRARY_API void generateTriangleInt(size_t n, std::vector<Eigen::Vector3d>& gaussInts);
+	MYLIBRARY_API Eigen::MatrixXd analytic_solution(const double lx, const double ly, const int nx, const int ny, size_t N = 100);
 }   // namespace CPPPOISSON
 

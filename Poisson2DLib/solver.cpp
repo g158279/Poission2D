@@ -10,9 +10,14 @@ namespace CPPPOISSON
 {
 	FEMProblem::FEMProblem(const Mesh& mesh, const PoissonDef& poissonDef,
 		const std::map<int, double>& boundary_conditions)
-		: mp_mesh(mesh), m_f(f), m_df_du(df_du), m_gauss_points(gauss_points), m_weights(weights), m_boundary_conditions(boundary_conditions)
+		: mp_mesh(mesh), m_f(f), m_df_du(df_du), m_gauss_points(gauss_points), m_boundary_conditions(boundary_conditions)
 	{
-		gauss_quadrature_2d(poissonDef.gaussN, m_gauss_points, m_weights); // 计算高斯积分网格点与权重
+		if (mesh.m_eleType == EleType::Rectangle) {
+			generateRectangleInt(poissonDef.gaussN, m_gaussPoints); // 计算高斯积分网格点与权重
+		}
+		else if (mesh.m_eleType == EleType::Triangle) {
+			generateTriangleInt(poissonDef.gaussN, m_gaussPoints); // 计算高斯积分网格点与权重
+		}
 		m_u = u0(mesh->m_points);
 	}
 

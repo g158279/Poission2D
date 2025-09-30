@@ -42,8 +42,7 @@ namespace CPPPOISSON
 		Eigen::VectorXd m_u;
 
 	private:
-		std::vector<Eigen::Vector2d> m_gauss_points;
-		std::vector<double> m_weights;
+		std::vector<Eigen::Vector3d> m_gaussPoints;
 	};
 }   // namespace CPPPOISSON
 
