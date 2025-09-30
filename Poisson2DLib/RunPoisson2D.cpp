@@ -1,9 +1,7 @@
 ﻿#include "RunPoisson2D.h"
-#include "RunPoisson2D.h"
 #include "mesh.h"
 #include "preprocess.h"
 //#include "utils.h"
-//#include "solver.h"
 
 using json = nlohmann::json;
 
@@ -31,7 +29,7 @@ namespace CPPPOISSON
 
 	void RunPoisson2D::initSolution()
 	{
-		m_solution(m_mesh.getPointSize());
+		m_solution.resize(m_mesh.getPointSize());
 		for (const auto& point : m_mesh.getAllPoints()) {
 			size_t index = point->index();
 			double x = point->x();
