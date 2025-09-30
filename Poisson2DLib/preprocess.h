@@ -30,28 +30,30 @@ namespace CPPPOISSON
 		double aTol{ 0.0 };
 		size_t gaussN{ 0 };
 		std::string shape{ "" };
-		std::string u0{ "" };
-		std::string f{ "" };
-		std::string df_du{ "" };
 		std::string outputPath{ "" };
 		std::string logPath{ "" };
 		Eigen::VectorXd uSol;
+		std::function<double(double)> f;
+		std::function<double(double)> df_du;
+		std::function<double(double, double)> u0;
 		Boundary boundary;
 	};
 
 	class PREPROCESS_API PreProcess
 	{
 	public:
-		explicit PreProcess() {};
+		explicit PreProcess(const std::filesystem::path& jsonPath);
 		~PreProcess() = default;
 		PreProcess(const PreProcess&) = delete;
 		PreProcess& operator=(const PreProcess&) = delete;
 		PreProcess(PreProcess&&) = delete;
 		PreProcess& operator=(PreProcess&&) = delete;
 
-		void readFromJson(const std::filesystem::path& jsonPath);
 		PoissonDef& getDef() { return m_def; };
 	private:
+		void readFromJson(const std::filesystem::path& jsonPath);
+		std::function<double(double)> parserFuncX(const std::string& exprStr);
+		std::function<double(double, double)> parserFuncXY(const std::string& exprStr);
 		PoissonDef m_def;
 	};
 }

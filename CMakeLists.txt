@@ -35,7 +35,15 @@ target_link_libraries(Poisson2DLib PUBLIC
 	Eigen3::Eigen
 	Boost::boost
 	nlohmann_json::nlohmann_json
+	muparser::muparser
 )
+set(MUPARSER_DLL $<$<CONFIG:Debug>:muparserd.dll>$<$<CONFIG:Release>:muparser.dll>)
+add_custom_target(CopyMuparser ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    $<TARGET_FILE_DIR:muparser::muparser>/${MUPARSER_DLL}
+    ${CMAKE_BINARY_DIR}/bin/muparser.dll
+)
+add_dependencies(Poisson2DLib CopyMuparser)
 
 target_compile_definitions(Poisson2DLib PRIVATE POISSON_EXPORTS)
 

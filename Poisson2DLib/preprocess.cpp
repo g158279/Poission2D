@@ -1,7 +1,13 @@
 #include "preprocess.h"
+#include <muParser.h>
 
 namespace CPPPOISSON
 {
+	PreProcess::PreProcess(const std::filesystem::path& jsonPath)
+	{
+		readFromJson(jsonPath);
+	}
+
 	void PreProcess::readFromJson(const std::filesystem::path& jsonPath)
 	{
 		using json = nlohmann::json;
@@ -61,9 +67,52 @@ namespace CPPPOISSON
 		m_def.maxIter = config["solver"]["max_iter"].get<double>();
 		m_def.outputPath = config["output"]["outputPath"].get<std::string>();
 		m_def.logPath = config["output"]["logPath"].get<std::string>();
-		m_def.u0 = config["functions"]["u0"].get<std::string>();
-		m_def.f = config["functions"]["f"].get<std::string>();
-		m_def.df_du = config["functions"]["df_du"].get<std::string>();
+		m_def.u0 = parserFuncXY(config["functions"]["u0"].get<std::string>());
+		m_def.f = parserFuncX(config["functions"]["f"].get<std::string>());
+		m_def.df_du = parserFuncX(config["functions"]["df_du"].get<std::string>());
+	}
+
+	std::function<double(double)> PreProcess::parserFuncX(const std::string& exprStr)
+	{
+		mu::Parser parser;
+		parser.SetExpr(exprStr);
+		std::shared_ptr<double> x = std::make_shared<double>(0.0);
+		parser.DefineVar("u", x.get());
+
+		return [parser, x, exprStr](double input) mutable {
+			*x = input;
+			try {
+				return parser.Eval();
+			}
+			catch (const mu::Parser::exception_type& ex) {
+				std::string errorMSG{ "Error involving parsing function string " };
+				errorMSG += exprStr + ": " + ex.GetMsg();
+				throw std::invalid_argument(errorMSG);
+			}
+			};
+	}
+
+	std::function<double(double, double)> PreProcess::parserFuncXY(const std::string& exprStr)
+	{
+		mu::Parser parser;
+		parser.SetExpr(exprStr);
+		std::shared_ptr<double> x = std::make_shared<double>(0.0);
+		std::shared_ptr<double> y = std::make_shared<double>(0.0);
+		parser.DefineVar("x", x.get());
+		parser.DefineVar("y", y.get());
+
+		return [parser, x, y, exprStr](double inputX, double inputY) mutable {
+			*x = inputX;
+			*y = inputY;
+			try {
+				return parser.Eval();
+			}
+			catch (const mu::Parser::exception_type& ex) {
+				std::string errorMSG{ "Error involving parsing function string " };
+				errorMSG += exprStr + ": " + ex.GetMsg();
+				throw std::invalid_argument(errorMSG);
+			}
+			};
 	}
 
 	bool Boundary::isOnBoundary(const Point& point, BoundaryType boundaryType) const

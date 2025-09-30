@@ -1,6 +1,6 @@
 ﻿#include "Poisson2DLib/preprocess.h"
 #include "Poisson2DLib/mesh.h"
-//#include "Poisson2DLib/RunPoisson2D.h"
+#include "Poisson2DLib/RunPoisson2D.h"
 
 using namespace CPPPOISSON;
 
@@ -16,11 +16,10 @@ int main(int argc, char* argv[])
 
         try
         {
-            PreProcess preProcess;
-            preProcess.readFromJson(argv[1]);
+            PreProcess preProcess(argv[1]);
             Mesh mesh(preProcess.getDef());
-            //RunPoisson2D task(argc, argv);
-            //bool simulationSucceeds = task.simulate();
+            RunPoisson2D task(mesh, preProcess);
+            task.simulate();
         }
         catch (const std::invalid_argument& e)
         {
@@ -33,16 +32,6 @@ int main(int argc, char* argv[])
             std::cout << "ERROR: Simulation failed!" << std::endl;
             return 4; // SIMULATION_FAILED
         }
-
-
-        //RunPoisson2D task(argc, argv);
-        //bool simulationSucceeds = task.simulate();
-
-        //if (!simulationSucceeds)
-        //{
-        //    std::cout << "ERROR: Simulation failed!" << std::endl;
-        //    return 7; // SIMULATION_FAILED
-        //}
 
         std::cout << "Simulation finished successfully!" << std::endl;
         return 0; // SIMULATION_SUCCEEDED
