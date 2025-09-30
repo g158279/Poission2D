@@ -18,8 +18,8 @@ int main(int argc, char* argv[])
         {
             PreProcess preProcess(argv[1]);
             Mesh mesh(preProcess.getDef());
-            RunPoisson2D task(mesh, preProcess);
-            task.simulate();
+            RunPoisson2D task(mesh, preProcess.getDef());
+            //task.simulate();
         }
         catch (const std::invalid_argument& e)
         {

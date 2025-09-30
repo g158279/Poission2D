@@ -8,19 +8,13 @@
 
 namespace CPPPOISSON
 {
-	FEMProblem::FEMProblem(const std::shared_ptr<Mesh>& mesh,
-		std::function<double(double)> f,
-		std::function<double(double)> df_du,
-		std::function<Eigen::VectorXd(const std::vector<Eigen::Vector2d>&)> u0,
-		const std::vector<Eigen::Vector2d>& gauss_points,
-		const std::vector<double>& weights,
+	FEMProblem::FEMProblem(const Mesh& mesh, const PoissonDef& poissonDef,
 		const std::map<int, double>& boundary_conditions)
 		: mp_mesh(mesh), m_f(f), m_df_du(df_du), m_gauss_points(gauss_points), m_weights(weights), m_boundary_conditions(boundary_conditions)
 	{
+		gauss_quadrature_2d(poissonDef.gaussN, m_gauss_points, m_weights); // 计算高斯积分网格点与权重
 		m_u = u0(mesh->m_points);
 	}
-
-	FEMProblem::~FEMProblem() {}
 
 	void FEMProblem::setBoundaryConditionOnEdge(const std::string& boundary, double value)
 	{

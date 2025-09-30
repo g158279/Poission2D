@@ -8,13 +8,8 @@
 
 
 #include "mesh.h"
-#include "utils.h"
-#include "solver.h"
-#include <iostream>
-#include <cstdio>
-#include <fstream>
-#include <functional>
-#include <nlohmann/json.hpp>
+//#include "utils.h"
+//#include "solver.h"
 
 namespace CPPPOISSON
 {
@@ -33,10 +28,10 @@ namespace CPPPOISSON
 
     private:
 		void initSolution();
-		const PoissonDef& m_poissonDef;
 		const Mesh& m_mesh;
+		const PoissonDef& m_poissonDef;
 		std::vector <std::pair<std::vector<size_t>, double>> m_dirichletBC;
 		Eigen::VectorXd m_solution;
-		FEMProblem m_problem;
+		//FEMProblem m_problem;
 	};
 }   // namespace CPPPOISSON

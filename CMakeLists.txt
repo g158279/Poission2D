@@ -23,12 +23,12 @@ target_sources (Poisson2DLib PRIVATE
 	Poisson2DLib/preprocess.cpp
  	Poisson2DLib/mesh.h
  	Poisson2DLib/mesh.cpp
+ 	Poisson2DLib/RunPoisson2D.h
+ 	Poisson2DLib/RunPoisson2D.cpp
 #	Poisson2DLib/solver.h
 #	Poisson2DLib/solver.cpp
 #	Poisson2DLib/utils.h
 #	Poisson2DLib/utils.cpp
-#	Poisson2DLib/RunPoisson2D.h
-#	Poisson2DLib/RunPoisson2D.cpp
 )
 
 target_link_libraries(Poisson2DLib PUBLIC

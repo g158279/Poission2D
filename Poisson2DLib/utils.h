@@ -1,5 +1,3 @@
-#ifndef UTILS_H
-#define UTILS_H
 
 #ifdef MYLIBRARY_EXPORTS
 #define MYLIBRARY_API __declspec(dllexport)
@@ -18,4 +16,3 @@ MYLIBRARY_API void gauss_quadrature_2d(size_t n, std::vector<Eigen::Vector2d>& p
 MYLIBRARY_API Eigen::MatrixXd analytic_solution(const double lx, const double ly, const int nx, const int ny, size_t N=100);
 }   // namespace CPPPOISSON
 
-#endif // UTILS_H

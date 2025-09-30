@@ -49,7 +49,7 @@ namespace CPPPOISSON
 		PreProcess(PreProcess&&) = delete;
 		PreProcess& operator=(PreProcess&&) = delete;
 
-		PoissonDef& getDef() { return m_def; };
+		const PoissonDef& getDef() { return m_def; };
 	private:
 		void readFromJson(const std::filesystem::path& jsonPath);
 		std::function<double(double)> parserFuncX(const std::string& exprStr);
