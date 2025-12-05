@@ -1,0 +1,75 @@
+﻿cmake_minimum_required(VERSION 3.25)
+
+project(Poisson2D LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
+set(CMAKE_PREFIX_PATH 3rdparty)
+find_package(nlohmann_json REQUIRED)
+find_package(muparser REQUIRED)
+find_package(Boost REQUIRED)
+find_package(Eigen3 REQUIRED)
+
+add_library (Poisson2DLib SHARED)
+
+target_sources (Poisson2DLib PRIVATE 
+	Poisson2DLib/geometry.h
+	Poisson2DLib/preprocess.h
+	Poisson2DLib/preprocess.cpp
+ 	Poisson2DLib/mesh.h
+ 	Poisson2DLib/mesh.cpp
+ 	Poisson2DLib/RunPoisson2D.h
+ 	Poisson2DLib/RunPoisson2D.cpp
+#	Poisson2DLib/solver.h
+#	Poisson2DLib/solver.cpp
+#	Poisson2DLib/utils.h
+#	Poisson2DLib/utils.cpp
+)
+
+target_link_libraries(Poisson2DLib PUBLIC
+	Eigen3::Eigen
+	Boost::boost
+	nlohmann_json::nlohmann_json
+	muparser::muparser
+)
+set(MUPARSER_DLL $<$<CONFIG:Debug>:muparserd.dll>$<$<CONFIG:Release>:muparser.dll>)
+add_custom_target(CopyMuparser ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    $<TARGET_FILE_DIR:muparser::muparser>/${MUPARSER_DLL}
+    ${CMAKE_BINARY_DIR}/bin/muparser.dll
+)
+add_dependencies(Poisson2DLib CopyMuparser)
+
+target_compile_definitions(Poisson2DLib PRIVATE POISSON_EXPORTS)
+
+option(USE_SPARSE_MATRIX "Use sparse matrix" ON)
+
+if(USE_SPARSE_MATRIX)
+    add_definitions(-DUSE_SPARSE_MATRIX)
+else()
+    add_definitions(-DUSE_DENSE_MATRIX)
+endif()
+
+add_executable(Poisson2D
+    main.cpp
+)
+
+target_link_libraries(Poisson2D PRIVATE Poisson2DLib)
+
+#enable_testing()
+#
+#add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest-main/googletest-main)
+#
+#add_executable(Poisson2DLibTest gtest/meshTest.cpp)
+#
+#target_link_libraries(Poisson2DLibTest PRIVATE Poisson2DLib GTest::gtest GTest::gtest_main)
+#
+#target_include_directories(Poisson2DLibTest PRIVATE ${CMAKE_SOURCE_DIR}/Poisson2DLib)
+#target_include_directories(Poisson2DLibTest PRIVATE ${GOOGLETEST_DIR})
+#
+#add_test(NAME Poisson2DLibTest COMMAND Poisson2DLibTest)

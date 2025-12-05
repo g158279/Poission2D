@@ -1,0 +1,30 @@
+{
+	"mesh": {
+		"lx": 2.0,
+		"ly": 1.0,
+		"nx": 20,
+		"ny": 10,
+		"shape": "rectangular"
+	},
+	"gauss_quadrature": {
+		"n": 2
+	},
+	"boundary_conditions": {
+		"left": 1.0,
+		"right": 2.0
+	},
+	"functions": {
+		"u0": "exp(-(x + y))",
+		"f": "exp(-u)",
+		"df_du": "-exp(-u)"
+	},
+	"solver": {
+		"rtol": 1e-6,
+		"atol": 1e-6,
+		"max_iter": 1000
+	},
+	"output":{
+		"outputPath": "./u_sol_mat.csv",
+		"logPath": "./solve_tri.log"
+	}
+}
